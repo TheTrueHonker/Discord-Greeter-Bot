@@ -12,14 +12,14 @@ namespace DiscordBot.Resources.Extensions
         public static Settings LoadSettingsJson()
         {
             string jsonLocation = Directory.GetCurrentDirectory() + @"\Data\Settings.json";
-            if(File.Exists(jsonLocation) == false)
-            {
-                Console.BackgroundColor = ConsoleColor.Red;
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("FILE Settings.json NOT FOUND!\nTERMINATING PROGRAM NOW");
-                System.Threading.Thread.Sleep(3_000);
-                return null;
-            }
+            //if(File.Exists(jsonLocation) == false)
+            //{
+            //    Console.BackgroundColor = ConsoleColor.Red;
+            //    Console.ForegroundColor = ConsoleColor.White;
+            //    Console.WriteLine("FILE Settings.json NOT FOUND!\nTERMINATING PROGRAM NOW");
+            //    System.Threading.Thread.Sleep(3_000);
+            //    return null;
+            //}
 
             string json = "";
             using (FileStream stream = new FileStream(jsonLocation, FileMode.Open, FileAccess.Read))
