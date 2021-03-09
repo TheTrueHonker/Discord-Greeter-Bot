@@ -29,8 +29,26 @@ namespace DiscordBot.Resources.Extensions
                     json = reader.ReadToEnd();
                 }
             }
-
-            return JsonConvert.DeserializeObject<Settings>(json);
+            if(json != "")
+            {
+                return JsonConvert.DeserializeObject<Settings>(json);
+            }
+            else
+            {
+                string token = Environment.GetEnvironmentVariable("BotToken");
+                ulong owner = ulong.Parse(Environment.GetEnvironmentVariable("BotAuthor"));
+                string version = Environment.GetEnvironmentVariable("BotVersion");
+                string name = Environment.GetEnvironmentVariable("BotName");
+                string prefix = Environment.GetEnvironmentVariable("BotPrefix");
+                return new Settings()
+                {
+                    Token = token,
+                    Owner = owner,
+                    Version = version,
+                    Name = name,
+                    Prefix = prefix
+                };
+            }
         }
     }
 }
