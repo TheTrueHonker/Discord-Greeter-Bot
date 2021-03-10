@@ -7,10 +7,15 @@ namespace DiscordBot.Resources.Extensions
 {
     public class UserSetupCollection
     {
-        private static Object FileLock = new Object();
-        private static readonly string FilePath = Directory.GetCurrentDirectory() + @"\Data\UserSetup.csv";
+        private Object FileLock = new Object();
+        private readonly string FilePath = Directory.GetCurrentDirectory() + @"\Data\UserSetup.csv";
 
-        public static ulong GetGuildID(ulong userId)
+        public UserSetupCollection(string localFilePath)
+        {
+            FilePath = Directory.GetCurrentDirectory() + localFilePath;
+        }
+
+        public ulong GetGuildID(ulong userId)
         {
             lock (FileLock)
             {
@@ -34,7 +39,7 @@ namespace DiscordBot.Resources.Extensions
             }
         }
 
-        public static void SetGuildID(ulong userId, ulong guildId)
+        public void SetGuildID(ulong userId, ulong guildId)
         {
             lock(FileLock)
             {
@@ -79,7 +84,7 @@ namespace DiscordBot.Resources.Extensions
             }
         }
 
-        public static bool RemoveUserId(ulong userId)
+        public bool RemoveUserId(ulong userId)
         {
             if(File.Exists(FilePath))
             {

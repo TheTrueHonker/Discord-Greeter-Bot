@@ -10,12 +10,15 @@ using DiscordBot.Resources.Datatypes;
 
 namespace DiscordBot
 {
-    class Program
+    public class Program
     {
         private DiscordSocketClient client;
         private CommandService commands;
         private Object lockObj;
         private Settings settings;
+        public static UserSetupCollection userSetupCollection;
+        public static UserSetupCollection questionWhitelistCollection;
+
 
         static void Main(string[] args)
         => new Program().MainAsync().GetAwaiter().GetResult();
@@ -24,6 +27,8 @@ namespace DiscordBot
         {
             lockObj = new Object();
             settings = LoadSettings.LoadSettingsJson();
+            userSetupCollection = new UserSetupCollection(@"\Data\UserSetup.csv");
+            questionWhitelistCollection = new UserSetupCollection(@"\Data\QuestionWhitelist.csv");
             Console.Title = settings.Name;
 
             client = new DiscordSocketClient(new DiscordSocketConfig
@@ -130,7 +135,7 @@ namespace DiscordBot
                 await channel.SendMessageAsync($"Sei gegrüßt {user.Username}! Willkommen auf unserem Server :grin:\n" +
                     $"Damit dir deine richtigen Server-Rechte zugeteilt werden können, müsstest du einige Fragen beantworten.\n" +
                     $"Dauert auch nicht lange, versprochen ;)");
-                UserSetupCollection.SetGuildID(user.Id, guildId);
+                userSetupCollection.SetGuildID(user.Id, guildId);
 
                 // Ask Questions saved for this guild
                 foreach(string question in PhrasesCollection.GetAllQuestions(guildId))
@@ -191,14 +196,14 @@ namespace DiscordBot
                 // Ende Rollenzuweisung
                 if (message.Content == PhrasesCollection.ConfirmEndPhrasesQuestion && reaction.Emote.Name == "✅")
                 {
-                    UserSetupCollection.RemoveUserId(userId);
+                    userSetupCollection.RemoveUserId(userId);
                     await channel.SendMessageAsync(":white_check_mark: Rollenzuweisung abgeschlossen");
                     return;
                 }
 
                 // Frage Rollenzuweisung
                 ulong guildId;
-                if ((guildId = UserSetupCollection.GetGuildID(userId)) != 0)
+                if ((guildId = userSetupCollection.GetGuildID(userId)) != 0)
                 {
                     ulong roleId = PhrasesCollection.GetRoleId(message.Content, reaction.Emote.Name, guildId);
                     if (roleId != 0)
